@@ -137,15 +137,6 @@ function deleteTask(e) {
   let taskNumber = e.id.split("-")[1];
   serverArray[serverNumber].runningTaskQueue = serverArray[
     serverNumber
-  ].runningTaskQueue.splice(
-    serverArray[serverNumber].runningTaskQueue.indexOf(parseInt(taskNumber), 1)
-  );
-
-  console.log(
-    serverArray[serverNumber].runningTaskQueue,
-    "deleted task",
-    serverNumber,
-    taskNumber
-  );
+  ].runningTaskQueue.filter((x) => x !== parseInt(taskNumber));
   document.getElementById(`server-${serverNumber}-task-${taskNumber}`).remove();
 }
