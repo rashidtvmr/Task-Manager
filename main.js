@@ -56,43 +56,47 @@ function addServer() {
 }
 
 function addTask(event) {
-  let taskNumber = event.id.split("-")[3];
-  let taskCountField = document.getElementById(`task-count-${taskNumber}`);
+  let serverNumberForTask = event.id.split("-")[3];
+  let taskCountField = document.getElementById(
+    `task-count-${serverNumberForTask}`
+  );
   for (var i = 0; i < taskCountField.value; i++) {
     let currentTaskContainer = document.getElementById(
-      `single-task-${taskNumber}`
+      `single-task-${serverNumberForTask}`
     );
-    currentTaskContainer.innerHTML += `<div class="single-task-container" id="server-${taskNumber}-task-${
-      serverArray[taskNumber].taskCount + 1
+    currentTaskContainer.innerHTML += `<div class="single-task-container" id="server-${serverNumberForTask}-task-${
+      serverArray[serverNumberForTask].taskCount + 1
     }">
   <span  style="line-height:40px"><label for="">${
-    serverArray[taskNumber].taskCount + 1
+    serverArray[serverNumberForTask].taskCount + 1
   }.</label></span>
   <progress
-  id="server-${taskNumber}-progress-${serverArray[taskNumber].taskCount + 1}"
+  id="server-${serverNumberForTask}-progress-${
+      serverArray[serverNumberForTask].taskCount + 1
+    }"
   value="0"
   max="100"
   data-label="Waiting...."
   >
-  </progress> <button class="dlt-btn" onclick='deleteTask(this)' id='${serverCount}-${
-      serverArray[taskNumber].taskCount + 1
+  </progress> <button class="dlt-btn" onclick='deleteTask(this)' id='${serverNumberForTask}-${
+      serverArray[serverNumberForTask].taskCount + 1
     }'><span class="material-icons">delete</span></button>
   </div>`;
-    serverArray[taskNumber].taskCount++;
-    serverArray[taskNumber].runningTaskQueue.push(
-      serverArray[taskNumber].taskCount
+    serverArray[serverNumberForTask].taskCount++;
+    serverArray[serverNumberForTask].runningTaskQueue.push(
+      serverArray[serverNumberForTask].taskCount
     );
-    runTask(taskNumber);
+    runTask(serverNumberForTask);
   }
 }
 
 function runTask(serverNumber) {
   console.warn("Task running");
-
   if (!serverArray[serverNumber].isTaskRunning) {
     serverArray[serverNumber].isTaskRunning = true;
     let count = 0;
     let taskNumber = serverArray[serverNumber].runningTaskQueue[0];
+    // if(taskNumber !== -1){
     let currentTask;
     serverArray[serverNumber].taskTracker = setInterval(() => {
       count++;
@@ -115,11 +119,12 @@ function runTask(serverNumber) {
         runTask(serverNumber);
       }
     }, 500);
+    // }
   } else if (
     serverArray[serverNumber].runningTaskQueue.length > 0 &&
     serverArray[serverNumber].isAllFinished
   ) {
-    // serverArray[serverNumber].isTaskRunning = false;
+    console.warn("Task running after halt");
     serverArray[serverNumber].isAllFinished = false;
     serverArray[serverNumber].isTaskRunning = false;
     runTask(serverNumber);
@@ -127,16 +132,18 @@ function runTask(serverNumber) {
 }
 
 function deleteTask(e) {
+  console.log(e.id);
   let serverNumber = e.id.split("-")[0];
   let taskNumber = e.id.split("-")[1];
-  serverArray[serverNumber].runningTaskQueue.splice(
-    0,
-    serverArray[serverNumber].runningTaskQueue.indexOf(taskNumber)
+  serverArray[serverNumber].runningTaskQueue = serverArray[
+    serverNumber
+  ].runningTaskQueue.splice(
+    serverArray[serverNumber].runningTaskQueue.indexOf(parseInt(taskNumber), 1)
   );
 
   console.log(
     serverArray[serverNumber].runningTaskQueue,
-    "deled task",
+    "deleted task",
     serverNumber,
     taskNumber
   );
