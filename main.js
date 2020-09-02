@@ -126,7 +126,7 @@ function runTask(serverNumber) {
       currentTask.value = count * 2.5;
       let time = `00:${20 - Math.floor(count / 2)}`;
       currentTask.setAttribute("data-label", time);
-      if (count === 20) {
+      if (count === 40) {
         clearInterval(serverArray[serverNumber].taskTracker);
         count = 0;
         serverArray[serverNumber].runningTaskQueue.shift();
